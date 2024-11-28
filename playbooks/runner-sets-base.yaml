@@ -1,0 +1,22 @@
+---
+- name: Install Actions Runner Controller (ARC) on Kubernetes
+  hosts: localhost
+
+  tasks:
+    - name: Install Runner Scale Set Controller
+      kubernetes.core.helm:
+        name: "arc"
+        namespace: "arc-systems"
+        create_namespace: yes
+        chart_ref: "oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller"
+        values: "{{ lookup('file', '../values/set-controller-values.yaml') | from_yaml }}"
+        state: present
+
+    - name: Install Runner Scale Set
+      kubernetes.core.helm:
+        name: arc-runner-set
+        namespace: arc-runners
+        create_namespace: yes
+        chart_ref: "oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set"
+        values: "{{ lookup('file', '../values/set-values.yaml') | from_yaml }}"
+        state: present

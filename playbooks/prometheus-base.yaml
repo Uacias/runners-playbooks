@@ -1,0 +1,12 @@
+---
+- name: Install Actions Runner Controller (ARC) on Kubernetes
+  hosts: localhost
+
+  tasks:
+    - name: Install Prometheus
+      kubernetes.core.helm:
+        name: prometheus
+        namespace: monitoring
+        create_namespace: yes
+        chart_ref: prometheus-community/prometheus
+        state: present
